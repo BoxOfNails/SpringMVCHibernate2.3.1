@@ -3,39 +3,26 @@ package web.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import web.model.Car;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import web.service.CarService;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @RequestMapping("/cars")
 public class CarController {
-    List<Car> cars;
     @Autowired
-    CarService carService;
+    private CarService carService;
     public CarController() {
-        cars = new ArrayList<>();
-        cars.add(new Car("car1", 1,2));
-        cars.add(new Car("car2", 3,4));
-        cars.add(new Car("car3", 5,6));
-        cars.add(new Car("car4", 7,8));
-        cars.add(new Car("car5", 9,10));
     }
-    @GetMapping()
-    public String getAllCars(@RequestParam(required = false) Integer count, Model theModel) {
-        if(count!=null && count <= 5) {
-            theModel.addAttribute("cars", carService.getNumberOfCars(cars, count));
-        } else {
-            theModel.addAttribute("cars", cars);
-        }
+    @GetMapping
+    public String getAllCars(Model theModel) {
+        theModel.addAttribute("cars", carService.getCars());
         return "cars";
     }
-    @GetMapping("/{carId}")
-    public String getSomeCars(@PathVariable int carId, Model theModel) {
-        theModel.addAttribute("cars", carService.getNumberOfCars(cars, carId));
+    @GetMapping(params = "count")
+    public String getSomeCars(@RequestParam(required = false) Integer count, Model theModel) {
+        theModel.addAttribute("cars", carService.getSomeCars(count));
         return "cars";
     }
 }
