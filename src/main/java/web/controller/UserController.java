@@ -3,10 +3,7 @@ package web.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import web.model.User;
 import web.service.UserService;
 
@@ -42,6 +39,20 @@ public class UserController {
     public String saveUser(@ModelAttribute("user") User theUser) {
         System.out.println("User from web: " + theUser);
         userService.save(theUser);
+        return "redirect:/users/list";
+    }
+    @GetMapping("/showFormForUpdate")
+    public String showFormForUpdate(@RequestParam("userId") int theId, Model theModel) {
+        User theUser = userService.findById(theId);
+
+        //set user as model attribute to pre-populate the form
+        theModel.addAttribute("user", theUser);
+        //send over to the form
+        return "user-form";
+    }
+    @GetMapping("/delete")
+    public String delete(@RequestParam("userId") int theId) {
+        userService.deleteById(theId);
         return "redirect:/users/list";
     }
 }
